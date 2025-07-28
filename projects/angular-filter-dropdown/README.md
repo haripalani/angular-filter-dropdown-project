@@ -129,11 +129,14 @@ Here's a complete example of how to use the `hp-filter-dropdown` component in yo
       <div *ngIf="getActiveFiltersCount() > 0" class="active-filters">
         <h3>Active Filters:</h3>
         <mat-chip-set>
-          <mat-chip *ngFor="let filter of currentFilters.flexwerkerLocatie" class="filter-chip">
-            Flexwerker: {{ filter }}
+          <mat-chip *ngFor="let filter of currentFilters.category" class="filter-chip">
+            Category: {{ filter }}
           </mat-chip>
-          <mat-chip *ngFor="let filter of currentFilters.mtlRelatieLocatie" class="filter-chip">
-            MTL Relatie: {{ filter }}
+          <mat-chip *ngFor="let filter of currentFilters.status" class="filter-chip">
+            Status: {{ filter }}
+          </mat-chip>
+          <mat-chip *ngFor="let filter of currentFilters.priority" class="filter-chip">
+            Priority: {{ filter }}
           </mat-chip>
         </mat-chip-set>
       </div>
@@ -158,26 +161,35 @@ export class AppComponent {
 
   filterCategories: FilterCategory[] = [
     {
-      key: 'flexwerkerLocatie',
-      label: 'Flexwerker locatie',
+      key: 'category',
+      label: 'Category',
       icon: 'category',
       options: [
-        { value: 'FR', label: 'FR', selected: false },
-        { value: 'FZ', label: 'FZ', selected: false },
-        { value: 'FE', label: 'FE', selected: false },
-        { value: 'FME', label: 'FME', selected: false }
+        { value: 'electronics', label: 'Electronics', selected: false },
+        { value: 'clothing', label: 'Clothing', selected: false },
+        { value: 'books', label: 'Books', selected: false },
+        { value: 'home', label: 'Home & Garden', selected: false }
       ]
     },
     {
-      key: 'mtlRelatieLocatie',
-      label: 'MTLRelatie locatie',
-      icon: 'category',
+      key: 'status',
+      label: 'Status',
+      icon: 'info',
       options: [
-        { value: 'FR', label: 'FR', selected: false },
-        { value: 'FZ', label: 'FZ', selected: false },
-        { value: 'FE', label: 'FE', selected: false },
-        { value: 'FME', label: 'FME', selected: false },
-        { value: 'MTL', label: 'MTL', selected: false }
+        { value: 'active', label: 'Active', selected: false },
+        { value: 'inactive', label: 'Inactive', selected: false },
+        { value: 'pending', label: 'Pending', selected: false },
+        { value: 'archived', label: 'Archived', selected: false }
+      ]
+    },
+    {
+      key: 'priority',
+      label: 'Priority',
+      icon: 'star',
+      options: [
+        { value: 'high', label: 'High', selected: false },
+        { value: 'medium', label: 'Medium', selected: false },
+        { value: 'low', label: 'Low', selected: false }
       ]
     }
   ];
@@ -277,4 +289,3 @@ If you wish to contribute to the `hp-filter-dropdown` library, you can find the 
 ## License
 
 This project is licensed under the MIT License.
-
