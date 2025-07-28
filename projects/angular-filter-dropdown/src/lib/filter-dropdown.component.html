@@ -1,0 +1,67 @@
+<div class="filter-dropdown-container">
+  <!-- Filter Button -->
+  <button 
+    mat-raised-button 
+    [color]="buttonColor"
+    (click)="toggleFilterPanel()"
+    class="filter-button"
+    [class.active]="isOpen">
+    <mat-icon>{{ buttonIcon }}</mat-icon>
+    {{ buttonText }}
+    <span *ngIf="getTotalSelectedCount() > 0" class="filter-badge">
+      {{ getTotalSelectedCount() }}
+    </span>
+    <mat-icon class="close-icon" *ngIf="isOpen" (click)="closeFilterPanel(); $event.stopPropagation()">
+      close
+    </mat-icon>
+  </button>
+
+  <!-- Filter Panel -->
+  <div class="filter-panel" [class.open]="isOpen">
+    <div class="filter-header">
+      <h3>
+        <mat-icon>{{ panelIcon }}</mat-icon>
+        {{ panelTitle }}
+      </h3>
+      <button mat-button class="clear-all-btn" (click)="clearAll()">
+        {{ clearAllText }}
+      </button>
+    </div>
+
+    <div class="filter-content">
+      <!-- Dynamic Filter Categories -->
+      <div class="filter-category" *ngFor="let category of categories; let i = index">
+        <div class="category-trigger" (click)="toggleCategoryDropdown(i)">
+          <div class="category-info">
+            <mat-icon>{{ category.icon }}</mat-icon>
+            <span class="category-label">{{ category.label }}</span>
+          </div>
+          <mat-icon class="expand-icon" [class.rotated]="dropdownStates[i]">
+            expand_more
+          </mat-icon>
+        </div>
+        
+        <div class="category-dropdown" [class.open]="dropdownStates[i]">
+          <div class="dropdown-options">
+            <mat-checkbox 
+              *ngFor="let option of category.options"
+              [checked]="option.selected"
+              (change)="onOptionChange(option)"
+              class="option-checkbox">
+              {{ option.label }}
+            </mat-checkbox>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-actions">
+      <button mat-button (click)="closeFilterPanel()" class="close-btn">
+        {{ closeText }}
+      </button>
+      <button mat-raised-button [color]="buttonColor" (click)="apply()" class="apply-btn">
+        {{ applyText }}
+      </button>
+    </div>
+  </div>
+</div>
