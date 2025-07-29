@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output, Input, OnInit, ElementRef, HostListener, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -35,7 +35,7 @@ export interface FilterCategory {
   templateUrl: './filter-dropdown.component.html',
   styleUrls: ['./filter-dropdown.component.scss']
 })
-export class FilterDropdownComponent implements OnInit {
+export class FilterDropdownComponent implements OnInit, OnDestroy {
   // Customizable Input Properties
   @Input() categories: FilterCategory[] = [
     {
@@ -70,6 +70,27 @@ export class FilterDropdownComponent implements OnInit {
   @Input() closeText: string = 'Close';
   @Input() applyText: string = 'Apply';
 
+  // Appearance Customization Properties
+  @Input() primaryColor: string = '#3f51b5';
+  @Input() primaryHoverColor: string = '#303f9f';
+  @Input() backgroundColor: string = '#fff';
+  @Input() backgroundHoverColor: string = '#f8f9ff';
+  @Input() textPrimaryColor: string = '#333';
+  @Input() textSecondaryColor: string = '#666';
+  @Input() borderColor: string = '#e0e0e0';
+  @Input() borderRadius: string = '8px';
+  @Input() panelMinWidth: string = '400px';
+  @Input() panelMaxWidth: string = '500px';
+  @Input() panelMaxHeight: string = '400px';
+  @Input() fontSize: string = '16px';
+  @Input() fontWeight: string = '500';
+  @Input() spacing: string = '16px';
+  @Input() shadowColor: string = 'rgba(0, 0, 0, 0.15)';
+  @Input() badgeColor: string = '#f44336';
+  @Input() customCssClass: string = '';
+  @Input() enableAnimations: boolean = true;
+  @Input() closeOnClickOutside: boolean = true;
+
   // Output Events
   @Output() filtersApplied = new EventEmitter<FilterData>();
   @Output() filtersCleared = new EventEmitter<void>();
@@ -78,9 +99,63 @@ export class FilterDropdownComponent implements OnInit {
   isOpen = false;
   dropdownStates: boolean[] = [];
 
+  constructor(private elementRef: ElementRef) {}
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event) {
+    if (this.isOpen && this.closeOnClickOutside && !this.elementRef.nativeElement.contains(event.target)) {
+      this.closeFilterPanel();
+    }
+  }
+
+  @HostListener('document:keydown.escape', ['$event'])
+  onEscapeKey(event: KeyboardEvent) {
+    if (this.isOpen) {
+      this.closeFilterPanel();
+      event.preventDefault();
+    }
+  }
+
   ngOnInit() {
     // Initialize dropdown states
     this.dropdownStates = new Array(this.categories.length).fill(false);
+    
+    // Apply custom CSS properties
+    this.applyCustomStyles();
+  }
+
+  private applyCustomStyles() {
+    // Check if we're in a browser environment
+    if (typeof document !== 'undefined') {
+      const hostElement = document.querySelector('lib-filter-dropdown') as HTMLElement;
+      if (hostElement) {
+        hostElement.style.setProperty('--color-primary', this.primaryColor);
+        hostElement.style.setProperty('--color-primary-hover', this.primaryHoverColor);
+        hostElement.style.setProperty('--color-background', this.backgroundColor);
+        hostElement.style.setProperty('--color-background-hover', this.backgroundHoverColor);
+        hostElement.style.setProperty('--color-text-primary', this.textPrimaryColor);
+        hostElement.style.setProperty('--color-text-secondary', this.textSecondaryColor);
+        hostElement.style.setProperty('--color-border', this.borderColor);
+        hostElement.style.setProperty('--radius-md', this.borderRadius);
+        hostElement.style.setProperty('--panel-min-width', this.panelMinWidth);
+        hostElement.style.setProperty('--panel-max-width', this.panelMaxWidth);
+        hostElement.style.setProperty('--panel-max-height', this.panelMaxHeight);
+        hostElement.style.setProperty('--font-size-md', this.fontSize);
+        hostElement.style.setProperty('--font-weight-medium', this.fontWeight);
+        hostElement.style.setProperty('--spacing-lg', this.spacing);
+        hostElement.style.setProperty('--shadow-md', `0 0.5rem 1.5rem ${this.shadowColor}`);
+        hostElement.style.setProperty('--color-danger', this.badgeColor);
+        
+        if (!this.enableAnimations) {
+          hostElement.style.setProperty('--transition-fast', '0s');
+          hostElement.style.setProperty('--transition-normal', '0s');
+        }
+      }
+    }
+  }
+
+  ngOnDestroy() {
+    // Cleanup if needed - HostListener decorators are automatically cleaned up
   }
 
   toggleFilterPanel() {

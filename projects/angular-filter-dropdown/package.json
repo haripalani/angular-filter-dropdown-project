@@ -1,6 +1,6 @@
 {
   "name": "hp-filter-dropdown",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A modern, responsive filter dropdown component for Angular 19+ with Material Design",
   "keywords": [
     "angular",
